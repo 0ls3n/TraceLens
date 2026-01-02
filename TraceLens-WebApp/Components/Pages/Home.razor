@@ -1,0 +1,60 @@
+﻿@page "/"
+
+@inject StackParserService StackParser
+
+<PageTitle>Home</PageTitle>
+
+<div class="trace-container">
+    <div>
+        <h2>Input</h2>
+        <div class="trace-input-container">
+
+
+
+            <span>Paste your stack trace</span>
+            <textarea @bind="trace" placeholder="Paste your stack trace here...
+
+Example:
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at MyApp.Services.UserService.GetUser(Int32 id) in UserService.cs:line 42
+   at MyApp.Controllers.HomeController.Index() in HomeController.cs:line 23"></textarea>
+
+            <button @onclick="ParseStackTrace">Parse stack trace</button>
+        </div>
+    </div>
+
+    <div class="trace-output-container">
+
+        <h2>Parsed Stack Trace</h2>
+
+        @if (parsedStackTrace != null)
+        {
+            <div class="trace-cause-container">
+                <span>@parsedStackTrace.MainCause</span>
+            </div>
+
+            <h4 style="opacity: 0.5;">Stack trace</h4>
+
+            <div class="trace-node-container">
+                @foreach (StackNode stackNode in parsedStackTrace.StackNodes.OrderByDescending(x => x.IsUserCode))
+                {
+                    <StackTraceNodeComponent StackNode="stackNode"></StackTraceNodeComponent>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    string trace = string.Empty;
+
+    ParsedStackTrace? parsedStackTrace = null;
+
+    public void ParseStackTrace()
+    {
+        parsedStackTrace = StackParser.ParseStackTrace(trace);
+
+        StateHasChanged();
+    }
+
+}

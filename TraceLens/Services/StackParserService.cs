@@ -5,7 +5,7 @@ namespace TraceLens.Services;
 
 public class StackParserService
 {
-    public List<StackNode> StackNodes { get; set; }
+    private List<StackNode> StackNodes { get; set; }
 
     public StackParserService()
     {
@@ -16,21 +16,8 @@ public class StackParserService
     {
         StackNodes.Clear();
         var parsed = new ParsedStackTrace();
-        
-        string mainCause = null;
-        
-        var match = Regex.Match(stackTrace, @"(?<exception>[\w\.]+Exception: .*?)( at |$)");
-        if (match.Success)
-        {
-            mainCause = match.Groups["exception"].Value.Trim();
-        }
 
-        if (mainCause == null)
-        {
-            mainCause = "Unknown exception";
-        }
-
-        parsed.MainCause = mainCause;
+        parsed.MainCause = ExtractMainCause(stackTrace);
         
         var parts = stackTrace.Split(new[] { "at " }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -74,5 +61,26 @@ public class StackParserService
         parsed.StackNodes = new List<StackNode>(StackNodes);
 
         return parsed;
+    }
+    
+    private string ExtractMainCause(string stackTrace)
+    {
+        var lines = stackTrace
+            .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (var line in lines)
+        {
+            var trimmed = line.Trim();
+            
+            if (trimmed.StartsWith("at "))
+                continue;
+            
+            if (trimmed.StartsWith("fail:") || trimmed.StartsWith("warn:") || trimmed.StartsWith("info:"))
+                continue;
+            
+            return trimmed;
+        }
+
+        return "Unknown exception";
     }
 }

@@ -1,0 +1,35 @@
+
+<div class="trace-node @(StackNode.IsUserCode ? "usercode" : "")">
+    <span>@StackNode.Method</span>
+    @if (StackNode.IsUserCode)
+    {
+        <span class="badge">Your Code</span>
+        <span>@StackNode.File : @StackNode.Line</span>
+    }
+</div>
+
+@code {
+    [EditorRequired]
+    [Parameter]
+    public StackNode StackNode { get; set; }
+
+    string shortenedFilePath = string.Empty;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if (firstRender)
+        {
+            if (StackNode.IsUserCode)
+            {
+                string[] splittedFilePath = StackNode.File.Split('/');
+
+                shortenedFilePath = splittedFilePath[splittedFilePath.Length - 1];
+                
+                StateHasChanged();
+            }
+        }
+    }
+
+}

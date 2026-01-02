@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraceLens", "TraceLens\Trac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraceLens-Console", "TraceLens-Console\TraceLens-Console.csproj", "{26BA8D2F-F8AA-4F2F-9CB7-9216B05A87FA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraceLens-WebApp", "TraceLens-WebApp\TraceLens-WebApp.csproj", "{975FA974-9F4A-4B34-AB5C-9CEC5D1746EB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{26BA8D2F-F8AA-4F2F-9CB7-9216B05A87FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26BA8D2F-F8AA-4F2F-9CB7-9216B05A87FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26BA8D2F-F8AA-4F2F-9CB7-9216B05A87FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{975FA974-9F4A-4B34-AB5C-9CEC5D1746EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{975FA974-9F4A-4B34-AB5C-9CEC5D1746EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{975FA974-9F4A-4B34-AB5C-9CEC5D1746EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{975FA974-9F4A-4B34-AB5C-9CEC5D1746EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
