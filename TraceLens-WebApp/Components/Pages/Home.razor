@@ -2,10 +2,10 @@
 
 @inject StackParserService StackParser
 
-<PageTitle>Home</PageTitle>
+<PageTitle>TraceLens</PageTitle>
 
 <div class="trace-container">
-    <div>
+    <div style="min-width: 0;">
         <h2>Input</h2>
         <div class="trace-input-container">
 
@@ -16,14 +16,15 @@
 
 Example:
 System.NullReferenceException: Object reference not set to an instance of an object.
-   at MyApp.Services.UserService.GetUser(Int32 id) in UserService.cs:line 42
-   at MyApp.Controllers.HomeController.Index() in HomeController.cs:line 23"></textarea>
+   at MyApp.Services.UserService.GetUserById(Int32 id) in UserService.cs:line 42
+   at MyApp.Pages.Users.OnInitializedAsync() in Users.cs:line 18
+   at Microsoft.AspNetCore.Components.ComponentBase.RunInitAndSetParametersAsync()"></textarea>
 
             <button @onclick="ParseStackTrace">Parse stack trace</button>
         </div>
     </div>
 
-    <div class="trace-output-container">
+    <div class="trace-output-container" style="min-width: 0;">
 
         <h2>Parsed Stack Trace</h2>
 
@@ -42,6 +43,24 @@ System.NullReferenceException: Object reference not set to an instance of an obj
                 }
             </div>
         }
+        else
+        {
+            @if (demoTrace != null)
+            {
+                <div class="trace-cause-container">
+                    <span>@demoTrace.MainCause</span>
+                </div>
+
+                <h4 style="opacity: 0.5;">Stack trace</h4>
+
+                <div class="trace-node-container">
+                    @foreach (StackNode stackNode in demoTrace.StackNodes.OrderByDescending(x => x.IsUserCode))
+                    {
+                        <StackTraceNodeComponent StackNode="stackNode"></StackTraceNodeComponent>
+                    }
+                </div>
+            }
+        }
     </div>
 </div>
 
@@ -49,6 +68,47 @@ System.NullReferenceException: Object reference not set to an instance of an obj
     string trace = string.Empty;
 
     ParsedStackTrace? parsedStackTrace = null;
+
+    ParsedStackTrace? demoTrace = null;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if (firstRender)
+        {
+            demoTrace = new ParsedStackTrace
+            {
+                MainCause = "System.NullReferenceException: Object reference not set to an instance of an object.",
+                StackNodes = new List<StackNode>
+                {
+                    new StackNode
+                    {
+                        Method = "MyApp.Services.UserService.GetUserById(Int32 id)",
+                        File = "UserService.cs",
+                        Line = 42,
+                        IsUserCode = true
+                    },
+                    new StackNode
+                    {
+                        Method = "MyApp.Pages.Users.OnInitializedAsync()",
+                        File = "Users.razor",
+                        Line = 18,
+                        IsUserCode = true
+                    },
+                    new StackNode
+                    {
+                        Method = "Microsoft.AspNetCore.Components.ComponentBase.RunInitAndSetParametersAsync()",
+                        File = null,
+                        Line = 0,
+                        IsUserCode = false
+                    }
+                }
+            };
+            
+            StateHasChanged();
+        }
+    }
 
     public void ParseStackTrace()
     {
